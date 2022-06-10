@@ -11,7 +11,7 @@ package main
 set NAME "jake"
 
 func main() {
-	fmt.Println(NAME)
+    fmt.Println(NAME)
 }
 ```
 
@@ -20,7 +20,7 @@ func main() {
 package main
 
 func main() {
-	fmt.Println("jake")
+    fmt.Println("jake")
 }
 ```
 
