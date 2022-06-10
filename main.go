@@ -1,9 +1,9 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/gookit/color"
+	"os"
 )
 
 func warn(message string) {
@@ -12,15 +12,13 @@ func warn(message string) {
 }
 
 func main() {
-	var filename string
-	
-	flag.StringVar(&filename, "f", "default", "provide a file to preprocess")
-	flag.Parse()
+	argLength := len(os.Args[1:]) 
 
-	if filename == "default" {
-		warn("Please provide a filename")
+	if argLength == 0 {
+		warn("Too few arguments, please provide a filename")
 		return
 	}
 
+	filename := os.Args[1]
 	fmt.Println(filename)
 }
