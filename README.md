@@ -8,7 +8,7 @@ Use the `set` keyword to define the value of a simple macro.
 ```go
 package main
 
-set NAME "jake"
+#set NAME "jake"
 
 func main() {
     fmt.Println(NAME)
