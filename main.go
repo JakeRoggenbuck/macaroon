@@ -12,7 +12,7 @@ func warn(message string) {
 }
 
 func main() {
-	argLength := len(os.Args[1:]) 
+	argLength := len(os.Args[1:])
 
 	if argLength == 0 {
 		warn("Too few arguments, please provide a filename")
