@@ -62,7 +62,10 @@ func parse(filename string) {
 		current := scanner.Text()
 		if len(current) < 1 { continue; }
 		if status := check_start(current); status {
-			fmt.Println(current)
+			command := lex(current)
+			if command == Set {
+				fmt.Println(current)
+			}
 		}
 	}
 
