@@ -34,6 +34,21 @@ func check_start(current string) bool {
 	return false
 }
 
+type Command int
+
+const (
+	Set Command = iota + 1
+	None
+)
+
+func lex(line string) Command {
+	if len(line) < 4 { return None }
+	if line[0:4] == "#set" {
+		return Set
+	}
+	return None 
+}
+
 func parse(filename string) {
 	file, err := os.Open(filename)
 	if err != nil {
