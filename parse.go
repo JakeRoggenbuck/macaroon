@@ -140,8 +140,6 @@ func parse(filename string) {
 			}
 		}
 
-		fmt.Println(macro_lines)
-
 		// Use macros
 		for _, mac := range macros {
 			if cur_start := strings.Index(current, mac.name); cur_start != -1 {
