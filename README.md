@@ -26,5 +26,5 @@ func main() {
 
 # Running
 ```sh
-macaroon main.mac.go && go build
+macaroon main.gomac && go build
 ```

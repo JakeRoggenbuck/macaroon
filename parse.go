@@ -83,7 +83,7 @@ func tokenize(line string, command Command, start int) Macro {
 	}
 
 	name = line[first+1:second]
-	value = line[second:]
+	value = line[second+1:]
 
 	return Macro {command, name, value}
 }
@@ -101,34 +101,49 @@ func parse(filename string) {
 	var macros[]Macro
 	var macro_lines[]int
 
-	file, err := os.Open(filename)
+	in_file, err := os.Open(filename)
 	if err != nil {
-		fatal("Error opening file")
+		fatal("Error opening input file")
 	}
 
-	defer file.Close()
+	out_file, err := os.Create(filename + ".go")
+	if err != nil {
+		fatal("Error writing to output file")
+	}
+
+	defer in_file.Close()
+	defer out_file.Close()
 
 	line_num := 0
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(in_file)
 	for scanner.Scan() {
 		current := scanner.Text()
 
 		// Add macros
-		if len(current) < 1 { continue; }
-		if start := check_start(current); start != -1 {
-			command := lex_command(current)
-			if command == None { continue; }
-			macro := tokenize(current, command, start)
-			macros = append(macros, macro)
-			macro_lines = append(macro_lines, line_num + 1)
+		if len(current) > 1 {
+			if start := check_start(current); start != -1 {
+				command := lex_command(current)
+				if command == None { continue; }
+				macro := tokenize(current, command, start)
+				macros = append(macros, macro)
+				macro_lines = append(macro_lines, line_num)
+			}
 		}
+
+		fmt.Println(macro_lines)
 
 		// Use macros
 		for _, mac := range macros {
 			if cur_start := strings.Index(current, mac.name); cur_start != -1 {
-				if !contains(macro_lines, cur_start) {
-					fmt.Println(cur_start)
+				if !contains(macro_lines, line_num) {
+					new_line := current[:cur_start] + mac.value + current[cur_start + len(mac.name):]
+					out_file.WriteString(new_line + "\n")
+					continue
 				}
+			}
+
+			if !contains(macro_lines, line_num) {
+				out_file.WriteString(current + "\n")
 			}
 		}
 
