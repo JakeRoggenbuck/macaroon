@@ -5,7 +5,7 @@ import (
 )
 
 type Args struct {
-	filename string
+	filename    string
 	hasFilename bool
 }
 
@@ -18,9 +18,8 @@ func parseArgs() Args {
 
 	filename := os.Args[1]
 
-	return Args {
+	return Args{
 		filename,
 		true,
 	}
 }
-
