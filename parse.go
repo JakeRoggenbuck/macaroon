@@ -4,6 +4,7 @@ import (
 	"os"
 	"bufio"
 	"fmt"
+	"strings"
 )
 
 func fast_forward_empty_space(current string) int {
@@ -87,7 +88,19 @@ func tokenize(line string, command Command, start int) Macro {
 	return Macro {command, name, value}
 }
 
+func contains(arr []int, num int) bool {
+   for _, a := range arr {
+      if a == num {
+         return true
+      }
+   }
+   return false
+}
+
 func parse(filename string) {
+	var macros[]Macro
+	var macro_lines[]int
+
 	file, err := os.Open(filename)
 	if err != nil {
 		fatal("Error opening file")
@@ -95,16 +108,31 @@ func parse(filename string) {
 
 	defer file.Close()
 
+	line_num := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		current := scanner.Text()
+
+		// Add macros
 		if len(current) < 1 { continue; }
 		if start := check_start(current); start != -1 {
 			command := lex_command(current)
 			if command == None { continue; }
 			macro := tokenize(current, command, start)
-			fmt.Println(macro)
+			macros = append(macros, macro)
+			macro_lines = append(macro_lines, line_num + 1)
 		}
+
+		// Use macros
+		for _, mac := range macros {
+			if cur_start := strings.Index(current, mac.name); cur_start != -1 {
+				if !contains(macro_lines, cur_start) {
+					fmt.Println(cur_start)
+				}
+			}
+		}
+
+		line_num += 1
 	}
 
 	if err := scanner.Err(); err != nil {
