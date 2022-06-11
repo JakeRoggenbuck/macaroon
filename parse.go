@@ -6,6 +6,34 @@ import (
 	"fmt"
 )
 
+func fast_forward_empty_space(current string) int {
+	index := 0
+
+	for {
+		if index + 1 > len(current) { break; }
+		cur := current[index]
+		if cur != '\t' && cur != ' ' { break; }
+
+		index += 1
+
+		if index > 999 {
+			fatal("Too much space before line")
+		}
+	}
+
+	return index
+}
+
+func check_start(current string) bool {
+	index := fast_forward_empty_space(current)
+
+	if current[index] == '#' {
+		return true
+	}
+
+	return false
+}
+
 func parse(filename string) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -17,7 +45,10 @@ func parse(filename string) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		current := scanner.Text()
-		fmt.Println(current)
+		if len(current) < 1 { continue; }
+		if status := check_start(current); status {
+			fmt.Println(current)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
